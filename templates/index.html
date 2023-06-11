@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Adam</title>
+<link href="https://c...content-available-to-author-only...r.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Form Pengiriman</h1>
+        <form action="/" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            <div class="form-group mb-3">
+                <label for="nama_file">Nama File:</label>
+                <input type="file" name="csv_file" id="csv_file" required="True" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Kirim</button>
+        </form>
+    </div>
+    <br>
+        <div class="text-center">
+            {% if excel_data %}
+            <div class="text-center">
+                <a class="btn btn-primary" href="/download_excel">Download Excel</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
