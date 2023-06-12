@@ -8,7 +8,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 import os
 import pandas
-import xlsxwriter
+from openpyxl import Workbook
 
 from flask import Flask, request, render_template,send_file
 import pandas as pd
@@ -49,24 +49,29 @@ def run_selenium(excel):
     isiexcel = pandas.read_csv(excel)
     myexcelcontain = isiexcel.values
 
-
     directory = 'sub2'
     if not os.path.exists(directory):
         os.makedirs(directory)
-    # Saving the Excel file
-    excel_file_path = os.path.join(directory, 'hasil_prediktor.xlsx')
-    workbook = xlsxwriter.Workbook(excel_file_path)
-    worksheet = workbook.add_worksheet()
-    row = 0
-    col = 0
 
-    for i in range(len(myexcelcontain)-1):
-        prompt=myexcelcontain[i][0].split('\n')[0]
-        topic=myexcelcontain[i][1].split('\n')[0]
-        
+    # Saving the Excel file
+    workbook = Workbook()
+    worksheet = workbook.active
+
+    row = 1
+    col = 1
+
+    worksheet.cell(row=row, column=col, value="prompt")
+    worksheet.cell(row=row, column=col+1, value="output")
+    row += 1
+
+    for i in range(len(myexcelcontain)):
+        prompt = myexcelcontain[i][0].replace('\n', ' ')
+        topic = myexcelcontain[i][1].replace('\n', ' ')
+        print("prompt: ", prompt)
+        print("topic: ", topic)
 
         chromedriver_path = r"G:\My Drive\chrome\chromedriver.exe"  # Update with the actual path
-        
+
         if os.path.exists(chromedriver_path):
             print("The file exists")
         else:
@@ -104,7 +109,7 @@ def run_selenium(excel):
         time.sleep(5)
 
         xfullpath='//*[@id="app"]/div/div[1]/div/div/div/div/div/div/footer/div/div/div[2]/div/div/div/div[1]/div[1]/textarea'
-        textarea=f"{prompt}:{topic} diakhiri tulisan 'the end'"
+        textarea=f"{prompt}:{topic}"
 
         click_selenium(driver,xfullpath,"xpath",textarea+"\n")
 
@@ -124,14 +129,14 @@ def run_selenium(excel):
         mydata=get_selenium(driver,xfullpath,"xpath")
         print(mydata)
 
-        worksheet.write(row, col, prompt)
-        worksheet.write(row, col + 1, mydata)
+        worksheet.cell(row=row, column=col, value=prompt)
+        worksheet.cell(row=row, column=col+1, value=mydata)
         row += 1
 
         time.sleep(2)
         driver.close()
 
-    workbook.close()
+    workbook.save('output.xlsx')
     return workbook
 
 @app.route('/', methods=['GET', 'POST'])
@@ -144,8 +149,7 @@ def index():
 
 @app.route('/download_excel')
 def download_excel():
-    return send_file('sub2\\hasil_prediktor.xlsx', as_attachment=True)
+    return send_file('output.xlsx', as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
