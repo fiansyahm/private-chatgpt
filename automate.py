@@ -48,11 +48,6 @@ def get_selenium(driver,xfullpath,search_by):
 def run_selenium(excel):
     isiexcel = pandas.read_csv(excel)
     myexcelcontain = isiexcel.values
-
-    directory = 'sub2'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
     # Saving the Excel file
     workbook = Workbook()
     worksheet = workbook.active
@@ -70,13 +65,13 @@ def run_selenium(excel):
         print("prompt: ", prompt)
         print("topic: ", topic)
 
-        chromedriver_path = r"G:\My Drive\chrome\chromedriver.exe"  # Update with the actual path
+        chromedriver_path = r"chromedriver.exe"  # Update with the actual path
 
         if os.path.exists(chromedriver_path):
             print("The file exists")
         else:
             print("The file does not exist")
-            chromedriver_path = r"H:\My Drive\chrome\chromedriver.exe"  # Update with the actual path
+            chromedriver_path = r"chromedriver.exe"  # Update with the actual path
 
         # Initialize the WebDriver with the chromedriver path
         driver = webdriver.Chrome(executable_path=chromedriver_path)
@@ -98,7 +93,7 @@ def run_selenium(excel):
         xfullpath='/html/body/div[2]/div/div/div[1]/div/div[3]/div/div/div[2]/div[2]/div[1]/div/input'
         click_selenium(driver,xfullpath,"xpath","jl07ko")
 
-        time.sleep(2)
+        time.sleep(10)
 
         xfullpath='/html/body/div[2]/div/div/div[1]/div/div[3]/div/div/div[2]/div[2]/div[1]/div/input'
         click_selenium(driver,xfullpath,"xpath","\n")
@@ -106,7 +101,7 @@ def run_selenium(excel):
         xfullpath='/html/body/div[1]/div/div[1]/div/div/div/aside/div[1]/div/main/div[1]/button'
         click_selenium(driver,xfullpath,"xpath")
 
-        time.sleep(5)
+        time.sleep(10)
 
         xfullpath='//*[@id="app"]/div/div[1]/div/div/div/div/div/div/footer/div/div/div[2]/div/div/div/div[1]/div[1]/textarea'
         textarea=f"{prompt}:{topic}"
