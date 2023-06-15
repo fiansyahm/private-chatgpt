@@ -1,3 +1,4 @@
+import shutil
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -50,6 +51,27 @@ def get_selenium(driver,xfullpath,search_by):
     return click_elem.text
 
 def run_selenium(csv_file,email,password,timer):
+    # Specify the folder path to delete
+    folder_to_delete = "output"
+
+    # Delete the folder if it exists
+    if os.path.exists(folder_to_delete):
+        shutil.rmtree(folder_to_delete)
+        print("Folder deleted:", folder_to_delete)
+    else:
+        print("Folder does not exist:", folder_to_delete)
+
+    # Specify the folder path to create
+    folder_to_create = "output"
+
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_to_create):
+        os.makedirs(folder_to_create)
+        print("Folder created:", folder_to_create)
+    else:
+        print("Folder already exists:", folder_to_create)
+
+
     isiexcel = pandas.read_csv(csv_file)
     myexcelcontain = isiexcel.values
     # Saving the Excel file
@@ -103,7 +125,7 @@ def run_selenium(csv_file,email,password,timer):
         xfullpath='//*[@id="app"]/div/div[1]/div/div/div/aside/div[1]/div/main/div[2]/div/div[1]/div/div/div/div/div/a/div[2]/button[2]'
         click_selenium(driver,xfullpath,"xpath")
 
-        time.sleep(5)
+        time.sleep(2)
     
         search_keyword = "Confirm"
         script = """
@@ -121,14 +143,19 @@ def run_selenium(csv_file,email,password,timer):
         time.sleep(5)
 
         prompt = myexcelcontain[i][0].replace('\n', ' ')
-        topic = myexcelcontain[i][1].replace('\n', ' ')
+        try:
+            topic = myexcelcontain[i][1].replace('\n', ' ')
+        except:
+            topic = ""
+        filename = myexcelcontain[i][2].replace('\n', ' ')
         print("prompt: ", prompt)
         print("topic: ", topic)
+        print("filename: ", filename)
 
         time.sleep(10)
 
         xfullpath='//*[@id="app"]/div/div[1]/div/div/div/div/div/div/footer/div/div/div[2]/div/div/div/div[1]/div[1]/textarea'
-        textarea=f"{prompt}:{topic}"
+        textarea=f"{prompt} {topic}"
 
         click_selenium(driver,xfullpath,"xpath",textarea+"\n")
 
@@ -156,8 +183,7 @@ def run_selenium(csv_file,email,password,timer):
         folder_path = "output"
 
         # Specify the file path
-        nomerku=i+1
-        file_path = os.path.join(folder_path, f"hasil_no_{nomerku}.txt")
+        file_path = os.path.join(folder_path, f"{filename}.txt")
 
         # Create the text file
         with open(file_path, "w") as file:
